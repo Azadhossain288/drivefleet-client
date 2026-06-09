@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import axios from "axios";
 
 const MyAddedCars = () => {
   const { user } = useContext(AuthContext);
   const [myCars, setMyCars] = useState([]);
   const [loading, setLoading] = useState(true);
-  const router = useRouter(); // 
+  const router = useRouter();
 
   useEffect(() => {
     if (user?.email) {
@@ -53,15 +53,29 @@ const MyAddedCars = () => {
             {myCars.map((car) => (
               <div key={car._id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col justify-between">
                 <div>
-                  <img src={car.imageUrl} alt={car.carName} className="w-full h-44 object-cover" />
+                  {/* Clicked image then going details page */}
+                  <img 
+                    src={car.imageUrl || car.image} 
+                    alt={car.carName} 
+                    onClick={() => router.push(`/cars/${car._id}`)}
+                    className="w-full h-44 object-cover cursor-pointer hover:opacity-90 transition-all" 
+                  />
                   <div className="p-5">
                     <h3 className="text-lg font-bold text-gray-900 mb-1">{car.carName}</h3>
                     <p className="text-sm text-gray-500">Rent: <span className="font-bold text-blue-600">${car.dailyPrice}/day</span> | Type: {car.carType}</p>
-                    <p className="text-xs text-gray-400 mt-1">Booked: {car.bookingCount || 0} times</p>
+                    <p className="text-xs text-gray-400 mt-1 mb-4">Booked: {car.bookingCount || 0} times</p>
+                    
+                    {/* view details button*/}
+                    <button
+                      onClick={() => router.push(`/cars/${car._id}`)}
+                      className="w-full py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-xl transition shadow-sm"
+                    >
+                      View Details
+                    </button>
                   </div>
                 </div>
+                {/* Edit & Delete button */}
                 <div className="p-5 pt-0 grid grid-cols-2 gap-3">
-              
                   <button 
                     onClick={() => router.push(`/my-added-cars/edit/${car._id}`)}
                     className="py-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-700 text-sm font-bold rounded-xl transition"
