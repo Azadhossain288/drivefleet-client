@@ -1,14 +1,15 @@
-// ./app/my-added-cars/page.js
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
+import { useRouter } from "next/navigation"; 
 import axios from "axios";
 
 const MyAddedCars = () => {
   const { user } = useContext(AuthContext);
   const [myCars, setMyCars] = useState([]);
   const [loading, setLoading] = useState(true);
+  const router = useRouter(); // 
 
   useEffect(() => {
     if (user?.email) {
@@ -60,7 +61,13 @@ const MyAddedCars = () => {
                   </div>
                 </div>
                 <div className="p-5 pt-0 grid grid-cols-2 gap-3">
-                  <button className="py-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-700 text-sm font-bold rounded-xl transition">Edit</button>
+              
+                  <button 
+                    onClick={() => router.push(`/my-added-cars/edit/${car._id}`)}
+                    className="py-2 bg-yellow-50 hover:bg-yellow-100 text-yellow-700 text-sm font-bold rounded-xl transition"
+                  >
+                    Edit
+                  </button>
                   <button onClick={() => handleDeleteCar(car._id)} className="py-2 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-bold rounded-xl transition">Delete</button>
                 </div>
               </div>
