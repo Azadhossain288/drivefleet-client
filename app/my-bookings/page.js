@@ -1,6 +1,3 @@
-
-
-// ./app/my-bookings/page.js
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
@@ -44,36 +41,63 @@ const MyBookings = () => {
     }
   };
 
-  if (!user) return <p style={{ color: "#fff", textAlign: "center", marginTop: "50px" }}>Please login to view your bookings.</p>;
-  if (loading) return <p style={{ color: "#fff", textAlign: "center", marginTop: "50px" }}>Loading your bookings...</p>;
+  if (!user) return <p className="text-center my-20 font-medium text-lg text-gray-600">Please login to view your bookings.</p>;
+  if (loading) return <p className="text-center my-20 font-medium text-lg text-gray-600">Loading your bookings...</p>;
 
   return (
-    <div style={{ maxWidth: "900px", margin: "40px auto", padding: "20px", color: "#fff" }}>
-      <h2 style={{ marginBottom: "20px" }}>My Booked Cars ({bookings.length})</h2>
-      {bookings.length === 0 ? (
-        <p>You haven't booked any cars yet.</p>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
-          {bookings.map((booking) => (
-            <div key={booking._id} style={{ display: "flex", gap: "20px", border: "1px solid #444", padding: "15px", borderRadius: "8px", backgroundColor: "#1e1e1e", alignItems: "center" }}>
-              <img src={booking.imageUrl || (booking.carId?.imageUrl)} alt={booking.carName} style={{ width: "120px", height: "80px", objectFit: "cover", borderRadius: "4px" }} />
-              <div style={{ flex: 1 }}>
-                <h3>{booking.carName}</h3>
-                <p style={{ color: "#aaa", fontSize: "14px" }}>Rent: ${booking.dailyRent}/day</p>
-                <p style={{ color: "#aaa", fontSize: "12px" }}>Booked on: {new Date(booking.bookingDate).toLocaleDateString()}</p>
+    <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto">
+        
+        <h2 className="text-3xl font-black text-gray-900 mb-6">
+          My Booked Cars ({bookings.length})
+        </h2>
+        
+        {bookings.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center shadow-sm">
+            <p className="text-gray-500 font-medium text-lg">You haven't booked any cars yet.</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {bookings.map((booking) => (
+              <div 
+                key={booking._id} 
+                className="bg-white border border-gray-100 rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-5 shadow-sm hover:shadow-md transition-all"
+              >
+                {/* car image */}
+                <img 
+                  src={booking.imageUrl || (booking.carId?.imageUrl) || (booking.carId?.image)} 
+                  alt={booking.carName} 
+                  className="w-full sm:w-36 h-24 object-cover rounded-xl border border-gray-50"
+                />
+                
+                {/* car information */}
+                <div className="flex-1 text-center sm:text-left">
+                  <h3 className="text-lg font-bold text-gray-900 mb-1">{booking.carName}</h3>
+                  
+                  
+                  <p className="text-sm text-gray-500 font-medium mb-1">
+                    Rent: <span className="text-blue-600 font-black">${booking.dailyPrice || booking.totalPrice || booking.dailyRent || "0"}</span>/day
+                  </p>
+                  
+                  <p className="text-xs text-gray-400 font-medium">
+                    Booked on: {booking.bookingDate ? new Date(booking.bookingDate).toLocaleDateString() : "Recent"}
+                  </p>
+                </div>
+                
+              
+                <button 
+                  onClick={() => handleCancelBooking(booking._id)} 
+                  className="w-full sm:w-auto px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl text-sm transition-all shadow-sm"
+                >
+                  Cancel Booking
+                </button>
               </div>
-              <button onClick={() => handleCancelBooking(booking._id)} style={{ padding: "8px 15px", backgroundColor: "#dc3545", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" }}>
-                Cancel Booking
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
 export default MyBookings;
-
-
-
