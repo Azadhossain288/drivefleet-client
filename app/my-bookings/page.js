@@ -41,6 +41,12 @@ const MyBookings = () => {
     }
   };
 
+  // added total amount booked cars
+  const totalAmount = bookings.reduce((sum, booking) => {
+    const price = booking.dailyPrice || booking.totalPrice || booking.dailyRent || 0;
+    return sum + Number(price);
+  }, 0);
+
   if (!user) return <p className="text-center my-20 font-medium text-lg text-gray-600">Please login to view your bookings.</p>;
   if (loading) return <p className="text-center my-20 font-medium text-lg text-gray-600">Loading your bookings...</p>;
 
@@ -48,9 +54,22 @@ const MyBookings = () => {
     <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         
-        <h2 className="text-3xl font-black text-gray-900 mb-6">
-          My Booked Cars ({bookings.length})
-        </h2>
+        
+        <h2 className="text-3xl font-black text-gray-900 mb-6">My Bookings</h2>
+
+      
+        {bookings.length > 0 && (
+          <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-8 shadow-sm flex flex-wrap justify-between items-center gap-4">
+            <div>
+              <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">Total Booked Cars</p>
+              <h3 className="text-2xl font-black text-gray-900">{bookings.length} {bookings.length > 1 ? "Cars" : "Car"}</h3>
+            </div>
+            <div className="sm:text-right">
+              <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">Total Cost</p>
+              <h3 className="text-3xl font-black text-blue-600">${totalAmount}</h3>
+            </div>
+          </div>
+        )}
         
         {bookings.length === 0 ? (
           <div className="bg-white rounded-2xl border border-gray-100 p-10 text-center shadow-sm">
@@ -63,28 +82,25 @@ const MyBookings = () => {
                 key={booking._id} 
                 className="bg-white border border-gray-100 rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-5 shadow-sm hover:shadow-md transition-all"
               >
-                {/* car image */}
+                
                 <img 
                   src={booking.imageUrl || (booking.carId?.imageUrl) || (booking.carId?.image)} 
                   alt={booking.carName} 
                   className="w-full sm:w-36 h-24 object-cover rounded-xl border border-gray-50"
                 />
                 
-                {/* car information */}
+              
                 <div className="flex-1 text-center sm:text-left">
                   <h3 className="text-lg font-bold text-gray-900 mb-1">{booking.carName}</h3>
-                  
-                  
                   <p className="text-sm text-gray-500 font-medium mb-1">
                     Rent: <span className="text-blue-600 font-black">${booking.dailyPrice || booking.totalPrice || booking.dailyRent || "0"}</span>/day
                   </p>
-                  
                   <p className="text-xs text-gray-400 font-medium">
                     Booked on: {booking.bookingDate ? new Date(booking.bookingDate).toLocaleDateString() : "Recent"}
                   </p>
                 </div>
                 
-              
+               
                 <button 
                   onClick={() => handleCancelBooking(booking._id)} 
                   className="w-full sm:w-auto px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl text-sm transition-all shadow-sm"
