@@ -1,9 +1,9 @@
-// ./app/available-cars/page.js
 "use client";
 
 import React, { useState, useEffect, useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const AvailableCars = () => {
   const { user } = useContext(AuthContext);
@@ -11,6 +11,7 @@ const AvailableCars = () => {
   const [search, setSearch] = useState("");
   const [carType, setCarType] = useState("all");
   const [sort, setSort] = useState("newest");
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -90,11 +91,17 @@ const AvailableCars = () => {
           ) : (
             cars.map((car) => (
               <div key={car._id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition flex flex-col">
-                <img src={car.imageUrl} alt={car.carName} className="w-full h-48 object-cover" />
+                {/* clicked image then going details page */}
+                <img 
+                  src={car.imageUrl} 
+                  alt={car.carName} 
+                  onClick={() => router.push(`/cars/${car._id}`)}
+                  className="w-full h-48 object-cover cursor-pointer hover:opacity-90 transition-all" 
+                />
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-1">{car.carName}</h3>
-                    <p className="text-sm text-gray-500 mb-3">Type: {car.carType} | Location: {car.location}</p>
+                    <p className="text-sm text-gray-500 mb-3">Type: {car.carType} | Location: {car.location || car.pickupLocation}</p>
                     <div className="flex justify-between items-center mb-4">
                       <span className="text-2xl font-black text-blue-600">${car.dailyPrice}<span className="text-sm font-normal text-gray-500">/day</span></span>
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${car.availabilityStatus === "Available" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
@@ -102,9 +109,27 @@ const AvailableCars = () => {
                       </span>
                     </div>
                   </div>
-                  <button onClick={() => handleBookCar(car)} disabled={car.availabilityStatus === "Unavailable"} className={`w-full py-2.5 rounded-xl font-bold transition ${car.availabilityStatus === "Available" ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}>
-                    {car.availabilityStatus === "Available" ? "Book Now" : "Already Booked"}
-                  </button>
+
+                  {/*button and view details*/}
+                  <div className="space-y-2.5">
+                    {/* view details  */}
+                    <button
+                      onClick={() => router.push(`/cars/${car._id}`)}
+                      className="w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold rounded-xl transition text-sm shadow-sm"
+                    >
+                      View Details
+                    </button>
+
+                    {/* Book Now button */}
+                    <button 
+                      onClick={() => handleBookCar(car)} 
+                      disabled={car.availabilityStatus === "Unavailable"} 
+                      className={`w-full py-2.5 rounded-xl font-bold transition text-sm ${car.availabilityStatus === "Available" ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
+                    >
+                      {car.availabilityStatus === "Available" ? "Book Now" : "Already Booked"}
+                    </button>
+                  </div>
+
                 </div>
               </div>
             ))
