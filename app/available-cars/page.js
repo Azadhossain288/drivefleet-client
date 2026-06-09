@@ -27,7 +27,7 @@ const AvailableCars = () => {
     fetchCars();
   }, [search, carType, sort]);
 
-  const handleBookCar = async (car) => {
+ const handleBookCar = async (car) => {
     if (!user) {
       alert("Please log in to book this car!");
       return;
@@ -38,25 +38,36 @@ const AvailableCars = () => {
     }
 
     try {
+      
       const bookingInfo = {
         carId: car._id,
         carName: car.carName,
-        imageUrl: car.imageUrl,
-        dailyPrice: car.dailyPrice, 
+        imageUrl: car.imageUrl || car.image,
+        dailyPrice: Number(car.dailyPrice),
+        totalPrice: Number(car.dailyPrice),
         userEmail: user.email,
+        
+        //  Boolean false alternative to backend aname using no
+        
+        driverNeeded: "No", 
+        
+        bookingStatus: "Confirmed",
+        bookingDate: new Date().toISOString()
       };
 
       const response = await axios.post("http://localhost:5000/api/bookings", bookingInfo, {
         withCredentials: true,
       });
 
-      if (response.data.success) {
+      if (response.data?.success || response.status === 200 || response.status === 201) {
         alert("Booking Confirmed Successfully! 🚗💨");
-        setCars(cars.map(c => c._id === car._id ? { ...c, availabilityStatus: "Unavailable", bookingCount: c.bookingCount + 1 } : c));
+        setCars(cars.map(c => c._id === car._id ? { ...c, availabilityStatus: "Unavailable", bookingCount: (c.bookingCount || 0) + 1 } : c));
+      } else {
+        alert("Booking failed. Server rejected the request.");
       }
     } catch (error) {
-      console.error(error);
-      alert("Booking failed. Try again.");
+      console.error("Booking Error details:", error.response?.data || error.message);
+      alert(`Booking failed: ${error.response?.data?.message || "Something went wrong!"}`);
     }
   };
 
@@ -93,7 +104,7 @@ const AvailableCars = () => {
               <div key={car._id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition flex flex-col">
                 {/* clicked image then going details page */}
                 <img 
-                  src={car.imageUrl} 
+                  src={car.imageUrl || car.image} 
                   alt={car.carName} 
                   onClick={() => router.push(`/cars/${car._id}`)}
                   className="w-full h-48 object-cover cursor-pointer hover:opacity-90 transition-all" 
@@ -101,7 +112,7 @@ const AvailableCars = () => {
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-1">{car.carName}</h3>
-                    <p className="text-sm text-gray-500 mb-3">Type: {car.carType} | Location: {car.location || car.pickupLocation}</p>
+                    <p className="text-sm text-gray-500 mb-3">Type: {car.carType} | Location: {car.location || car.pickupLocation || "Not Specified"}</p>
                     <div className="flex justify-between items-center mb-4">
                       <span className="text-2xl font-black text-blue-600">${car.dailyPrice}<span className="text-sm font-normal text-gray-500">/day</span></span>
                       <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${car.availabilityStatus === "Available" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
@@ -110,9 +121,9 @@ const AvailableCars = () => {
                     </div>
                   </div>
 
-                  {/*button and view details*/}
+                  {/* button section */}
                   <div className="space-y-2.5">
-                    {/* view details  */}
+                    {/* View Details button */}
                     <button
                       onClick={() => router.push(`/cars/${car._id}`)}
                       className="w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold rounded-xl transition text-sm shadow-sm"
@@ -124,7 +135,11 @@ const AvailableCars = () => {
                     <button 
                       onClick={() => handleBookCar(car)} 
                       disabled={car.availabilityStatus === "Unavailable"} 
-                      className={`w-full py-2.5 rounded-xl font-bold transition text-sm ${car.availabilityStatus === "Available" ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm" : "bg-gray-200 text-gray-400 cursor-not-allowed"}`}
+                      className={`w-full py-2.5 rounded-xl font-bold transition text-sm ${
+                        car.availabilityStatus === "Available" 
+                          ? "bg-blue-600 hover:bg-blue-700 text-white shadow-sm cursor-pointer" 
+                          : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      }`}
                     >
                       {car.availabilityStatus === "Available" ? "Book Now" : "Already Booked"}
                     </button>
