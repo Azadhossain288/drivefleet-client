@@ -16,8 +16,8 @@ export default function Footer() {
         </div>
         <div>
           <h4 className="text-white text-sm font-bold mb-3 uppercase tracking-wider">Contact Corporate</h4>
-          <p className="text-sm text-gray-300">📍 Elite Tower, Level 4, Dhaka, BD</p>
-          <p className="text-sm text-gray-300 mt-1">✉️ operations@drivefleet.com</p>
+          <p className="text-sm text-gray-300">📍 Zindabazar, Sylhet, BD</p>
+          <p className="text-sm text-gray-300 mt-1">✉️ azadhossain16288@gmail.com</p>
         </div>
       </div>
       <div className="text-center text-xs text-gray-600 mt-12 pt-6 border-t border-gray-800">
