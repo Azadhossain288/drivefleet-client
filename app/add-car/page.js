@@ -41,9 +41,9 @@ const AddCar = () => {
       };
 
       // express backend api call
-      const response = await axios.post("http://localhost:5000/api/cars", carData, {
-        withCredentials: true,
-      });
+      const response = await axios.post("https://drivefleet-server-94v3.onrender.com/api/cars", carData, {
+  withCredentials: true,
+});
 
       if (response.data) {
         alert("Car Added Successfully! 🎉");
