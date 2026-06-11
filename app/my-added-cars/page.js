@@ -13,8 +13,9 @@ const MyAddedCars = () => {
 
   useEffect(() => {
     if (user?.email) {
+      
       axios
-        .get(`http://localhost:5000/api/cars/my-cars/${user.email}`, { withCredentials: true })
+        .get(`https://drivefleet-server-94v3.onrender.com/api/cars/my-cars/${user.email}`, { withCredentials: true })
         .then((res) => {
           setMyCars(res.data);
           setLoading(false);
@@ -30,7 +31,8 @@ const MyAddedCars = () => {
     if (!window.confirm("Are you sure you want to delete this car listing?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/cars/${id}`, { withCredentials: true });
+      
+      await axios.delete(`https://drivefleet-server-94v3.onrender.com/api/cars/${id}`, { withCredentials: true });
       alert("Car deleted successfully.");
       setMyCars(myCars.filter((car) => car._id !== id));
     } catch (error) {
