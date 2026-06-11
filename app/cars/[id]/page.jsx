@@ -13,11 +13,11 @@ const CarDetails = () => {
   const [car, setCar] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  
   useEffect(() => {
     if (id) {
+     
       axios
-        .get(`http://localhost:5000/api/cars/${id}`)
+        .get(`https://drivefleet-server-94v3.onrender.com/api/cars/${id}`)
         .then((res) => {
           setCar(res.data);
           setLoading(false);
@@ -29,7 +29,6 @@ const CarDetails = () => {
     }
   }, [id]);
 
-  
   const handleBookCar = async () => {
     if (!user) {
       alert("Please log in to book this car!");
@@ -53,17 +52,16 @@ const CarDetails = () => {
         bookingDate: new Date().toISOString()
       };
 
-      const response = await axios.post("http://localhost:5000/api/bookings", bookingInfo, {
+   
+      const response = await axios.post("https://drivefleet-server-94v3.onrender.com/api/bookings", bookingInfo, {
         withCredentials: true,
       });
 
       if (response.data?.success || response.status === 200 || response.status === 201) {
         alert("Booking Confirmed Successfully! 🚗💨");
         
-     
         setCar({ ...car, availabilityStatus: "Unavailable" });
         
-     
         router.push("/my-bookings");
       } else {
         alert("Booking failed. Server rejected the request.");
@@ -81,14 +79,12 @@ const CarDetails = () => {
     <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
         
-
         <img 
           src={car.imageUrl || car.image} 
           alt={car.carName} 
           className="w-full h-96 object-cover"
         />
 
-      
         <div className="p-8">
           <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
             <div>
@@ -98,7 +94,6 @@ const CarDetails = () => {
               </p>
             </div>
             
-           
             <div className="text-right">
               <p className="text-3xl font-black text-blue-600">${car.dailyPrice}<span className="text-sm font-normal text-gray-500">/day</span></p>
               <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs font-bold ${car.availabilityStatus === "Available" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-700"}`}>
@@ -109,7 +104,6 @@ const CarDetails = () => {
 
           <hr className="border-gray-100 my-6" />
 
-       
           <div className="mb-8">
             <h4 className="text-lg font-bold text-gray-900 mb-2">Description & Features</h4>
             <p className="text-gray-600 leading-relaxed">
@@ -117,7 +111,6 @@ const CarDetails = () => {
             </p>
           </div>
 
-         
           <button
             onClick={handleBookCar}
             disabled={car.availabilityStatus === "Unavailable"}
