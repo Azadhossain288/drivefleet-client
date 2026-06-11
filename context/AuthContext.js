@@ -20,13 +20,11 @@ export const AuthProvider = ({ children }) => {
 
   const googleProvider = new GoogleAuthProvider();
 
-  // ১. অ্যাকাউন্ট তৈরির সাথে সাথে নাম ও ছবি আপডেট করার ব্যবস্থা (ফিক্সড)
   const createUser = async (email, password, name, photo) => {
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       
-      // অ্যাকাউন্ট তৈরি সফল হলে সাথে সাথে নাম ও ছবি প্রোফাইলে সেভ হবে
       if (userCredential.user) {
         await updateProfile(userCredential.user, {
           displayName: name,
@@ -54,7 +52,8 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/auth/logout', {}, { withCredentials: true });
+      
+      await axios.post('https://drivefleet-server-94v3.onrender.com/api/auth/logout', {}, { withCredentials: true });
     } catch (err) {
       console.error("Logout cookie clear failed", err);
     }
@@ -71,7 +70,8 @@ export const AuthProvider = ({ children }) => {
       
       if (currentUser?.email) {
         try {
-          await axios.post('http://localhost:5000/api/auth/jwt', { email: currentUser.email }, { withCredentials: true });
+         
+          await axios.post('https://drivefleet-server-94v3.onrender.com/api/auth/jwt', { email: currentUser.email }, { withCredentials: true });
         } catch (err) {
           console.error("JWT token generation failed", err);
         }
