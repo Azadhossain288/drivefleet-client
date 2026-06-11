@@ -15,7 +15,8 @@ export default function EditCarPage() {
   useEffect(() => {
     const fetchCarDetails = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/cars/${id}`, { withCredentials: true });
+        
+        const response = await axios.get(`https://drivefleet-server-94v3.onrender.com/api/cars/${id}`, { withCredentials: true });
         if (response.data) {
           setCar(response.data.car || response.data.data || response.data);
         }
@@ -44,7 +45,8 @@ export default function EditCarPage() {
     };
 
     try {
-      const response = await axios.put(`http://localhost:5000/api/cars/${id}`, updatedData, { withCredentials: true });
+      
+      const response = await axios.put(`https://drivefleet-server-94v3.onrender.com/api/cars/${id}`, updatedData, { withCredentials: true });
       if (response.status === 200 || response.status === 201) {
         alert("✅ The car information successfully updated");
         router.push("/my-added-cars");
@@ -159,7 +161,6 @@ export default function EditCarPage() {
           ></textarea>
         </div>
 
-       
         <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
           <button 
             type="button" 
