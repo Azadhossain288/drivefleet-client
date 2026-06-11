@@ -11,8 +11,9 @@ const MyBookings = () => {
 
   useEffect(() => {
     if (user?.email) {
+      
       axios
-        .get(`http://localhost:5000/api/bookings/${user.email}`, { withCredentials: true })
+        .get(`https://drivefleet-server-94v3.onrender.com/api/bookings/${user.email}`, { withCredentials: true })
         .then((res) => {
           setBookings(res.data);
           setLoading(false);
@@ -28,7 +29,8 @@ const MyBookings = () => {
     if (!window.confirm("Are you sure you want to cancel this booking?")) return;
 
     try {
-      const response = await axios.delete(`http://localhost:5000/api/bookings/${id}`, {
+     
+      const response = await axios.delete(`https://drivefleet-server-94v3.onrender.com/api/bookings/${id}`, {
         withCredentials: true,
       });
       if (response.data.success) {
@@ -54,10 +56,8 @@ const MyBookings = () => {
     <div className="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         
-        
         <h2 className="text-3xl font-black text-gray-900 mb-6">My Bookings</h2>
 
-      
         {bookings.length > 0 && (
           <div className="bg-white border border-gray-100 rounded-2xl p-6 mb-8 shadow-sm flex flex-wrap justify-between items-center gap-4">
             <div>
@@ -82,14 +82,12 @@ const MyBookings = () => {
                 key={booking._id} 
                 className="bg-white border border-gray-100 rounded-2xl p-5 flex flex-col sm:flex-row items-center gap-5 shadow-sm hover:shadow-md transition-all"
               >
-                
                 <img 
                   src={booking.imageUrl || (booking.carId?.imageUrl) || (booking.carId?.image)} 
                   alt={booking.carName} 
                   className="w-full sm:w-36 h-24 object-cover rounded-xl border border-gray-50"
                 />
                 
-              
                 <div className="flex-1 text-center sm:text-left">
                   <h3 className="text-lg font-bold text-gray-900 mb-1">{booking.carName}</h3>
                   <p className="text-sm text-gray-500 font-medium mb-1">
@@ -100,7 +98,6 @@ const MyBookings = () => {
                   </p>
                 </div>
                 
-               
                 <button 
                   onClick={() => handleCancelBooking(booking._id)} 
                   className="w-full sm:w-auto px-5 py-2.5 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl text-sm transition-all shadow-sm"
