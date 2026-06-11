@@ -16,8 +16,9 @@ const AvailableCars = () => {
   useEffect(() => {
     const fetchCars = async () => {
       try {
+       
         const response = await axios.get(
-          `http://localhost:5000/api/cars?search=${search}&carType=${carType}&sort=${sort}`
+          `https://drivefleet-server-94v3.onrender.com/api/cars?search=${search}&carType=${carType}&sort=${sort}`
         );
         setCars(response.data);
       } catch (error) {
@@ -27,7 +28,7 @@ const AvailableCars = () => {
     fetchCars();
   }, [search, carType, sort]);
 
- const handleBookCar = async (car) => {
+  const handleBookCar = async (car) => {
     if (!user) {
       alert("Please log in to book this car!");
       return;
@@ -38,7 +39,6 @@ const AvailableCars = () => {
     }
 
     try {
-      
       const bookingInfo = {
         carId: car._id,
         carName: car.carName,
@@ -46,22 +46,20 @@ const AvailableCars = () => {
         dailyPrice: Number(car.dailyPrice),
         totalPrice: Number(car.dailyPrice),
         userEmail: user.email,
-        
-        //  Boolean false alternative to backend aname using no
-        
         driverNeeded: "No", 
-        
         bookingStatus: "Confirmed",
         bookingDate: new Date().toISOString()
       };
 
-      const response = await axios.post("http://localhost:5000/api/bookings", bookingInfo, {
+    
+      const response = await axios.post("https://drivefleet-server-94v3.onrender.com/api/bookings", bookingInfo, {
         withCredentials: true,
       });
 
       if (response.data?.success || response.status === 200 || response.status === 201) {
         alert("Booking Confirmed Successfully! 🚗💨");
         setCars(cars.map(c => c._id === car._id ? { ...c, availabilityStatus: "Unavailable", bookingCount: (c.bookingCount || 0) + 1 } : c));
+        router.push("/my-bookings"); 
       } else {
         alert("Booking failed. Server rejected the request.");
       }
@@ -102,7 +100,6 @@ const AvailableCars = () => {
           ) : (
             cars.map((car) => (
               <div key={car._id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition flex flex-col">
-                {/* clicked image then going details page */}
                 <img 
                   src={car.imageUrl || car.image} 
                   alt={car.carName} 
@@ -121,9 +118,7 @@ const AvailableCars = () => {
                     </div>
                   </div>
 
-                  {/* button section */}
                   <div className="space-y-2.5">
-                    {/* View Details button */}
                     <button
                       onClick={() => router.push(`/cars/${car._id}`)}
                       className="w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold rounded-xl transition text-sm shadow-sm"
@@ -131,7 +126,6 @@ const AvailableCars = () => {
                       View Details
                     </button>
 
-                    {/* Book Now button */}
                     <button 
                       onClick={() => handleBookCar(car)} 
                       disabled={car.availabilityStatus === "Unavailable"} 
